@@ -1,0 +1,7 @@
+{
+  "name": "CodeBuddy",
+  "description": "A friendly and easy-to-understand AI programming tutor designed to help beginners solve coding doubts.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
