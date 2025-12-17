@@ -1,13 +1,28 @@
 import { GoogleGenAI } from "@google/genai";
 import { GenerateResponse, Source } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Lazy initialization to prevent crashes if API_KEY is missing during build/deploy
+let ai: GoogleGenAI | null = null;
+
+const getAIClient = () => {
+  if (!ai) {
+    // Check if API Key is available
+    const apiKey = process.env.API_KEY;
+    if (!apiKey) {
+      throw new Error("API Key is missing. Please check your environment configuration.");
+    }
+    ai = new GoogleGenAI({ apiKey });
+  }
+  return ai;
+};
 
 const MODEL_NAME = 'gemini-3-pro-preview';
 
 export const generateAnswer = async (prompt: string): Promise<GenerateResponse> => {
   try {
-    const response = await ai.models.generateContent({
+    const client = getAIClient();
+    
+    const response = await client.models.generateContent({
       model: MODEL_NAME,
       contents: prompt,
       config: {
@@ -58,8 +73,8 @@ export const generateAnswer = async (prompt: string): Promise<GenerateResponse> 
 
     if (errString.includes("429")) {
       message = "I'm getting too many questions right now! Please give me a moment to rest.";
-    } else if (errMessage.includes("API key")) {
-      message = "It looks like my access key is missing or invalid. Please check the setup.";
+    } else if (errMessage.includes("API key") || errMessage.includes("environment")) {
+      message = "It looks like my access key is missing. If you are the owner, please check your repository secrets.";
     } else if (errMessage.includes("SAFETY")) {
       message = "I can't answer that question due to safety guidelines. Can we talk about coding instead?";
     }
