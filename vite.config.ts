@@ -9,7 +9,8 @@ export default defineConfig(({ mode }) => {
     base: '/Code-Buddy/',
     define: {
       // Polyfill process.env.API_KEY for the browser environment
-      'process.env.API_KEY': JSON.stringify(env.API_KEY),
+      // Fallback to empty string to prevent undefined errors during replacement
+      'process.env.API_KEY': JSON.stringify(env.API_KEY || ''),
     },
   };
 });
