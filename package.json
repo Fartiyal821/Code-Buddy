@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "homepage": "https://fartiyal821.github.io/Code-Buddy/",
   "description": "An AI-powered programming doubt solver using Google Gemini 2.5.",
   "license": "MIT",
   "scripts": {
